@@ -5,7 +5,7 @@
 <html>
 <head>
 <title></title>
-<link rel="stylesheet" href="/tipitaka.css"/>
+<link rel="stylesheet" href="tipitaka.css"/>
 </head>
 <body>
 <xsl:apply-templates select="/*"/>
