@@ -76,11 +76,7 @@ export class HbMenu extends LitElement {
                 <a href="/" @click=${(e: Event) => this.navigate(e, "/")}>
                     <h2
                         class="text-xl font-black text-gray-500 dark:text-gray-400">
-                        Heart
-                        <img
-                            class="inline w-7 h-7 ml-[-6px] mt-[-5px] mr-[-6px]"
-                            src="${hbLogo}" />
-                        ank®
+                        Silicon Wat ℠
                     </h2>
                 </a>
                 <button
@@ -278,10 +274,10 @@ export class HbMenu extends LitElement {
                                               class="shrink-0 w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
                                               aria-hidden="true"
                                               xmlns="http://www.w3.org/2000/svg"
-                                              fill="skyblue"
+                                              fill="orange"
                                               viewBox="0 0 512 512">
                                               <path
-                                                  d="M271.9 20.2c-9.8-5.6-21.9-5.6-31.8 0l-224 128c-12.6 7.2-18.8 22-15.1 36S17.5 208 32 208l32 0 0 208 0 0-51.2 38.4C4.7 460.4 0 469.9 0 480 0 497.7 14.3 512 32 512l448 0c17.7 0 32-14.3 32-32 0-10.1-4.7-19.6-12.8-25.6l-51.2-38.4 0-208 32 0c14.5 0 27.2-9.8 30.9-23.8s-2.5-28.8-15.1-36l-224-128zM400 208l0 208-64 0 0-208 64 0zm-112 0l0 208-64 0 0-208 64 0zm-112 0l0 208-64 0 0-208 64 0zM256 96a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" />
+                                                  d="M0 72C0 58.8 10.7 48 24 48l48 0c13.3 0 24 10.7 24 24l0 104 24 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-96 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l24 0 0-80-24 0C10.7 96 0 85.3 0 72zM30.4 301.2C41.8 292.6 55.7 288 70 288l4.9 0c33.7 0 61.1 27.4 61.1 61.1 0 19.6-9.4 37.9-25.2 49.4l-24 17.5 33.2 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-90.7 0C13.1 464 0 450.9 0 434.7 0 425.3 4.5 416.5 12.1 411l70.5-51.3c3.4-2.5 5.4-6.4 5.4-10.6 0-7.2-5.9-13.1-13.1-13.1L70 336c-3.9 0-7.7 1.3-10.8 3.6L38.4 355.2c-10.6 8-25.6 5.8-33.6-4.8S-1 324.8 9.6 316.8l20.8-15.6zM224 64l256 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-256 0c-17.7 0-32-14.3-32-32s14.3-32 32-32zm0 160l256 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-256 0c-17.7 0-32-14.3-32-32s14.3-32 32-32zm0 160l256 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-256 0c-17.7 0-32-14.3-32-32s14.3-32 32-32z" />
                                           </svg>
                                           <span
                                               class="flex-1 ms-3 whitespace-nowrap"
@@ -289,7 +285,7 @@ export class HbMenu extends LitElement {
                                           </span>
                                       </a>
                                   </li>
-                                  <li>
+                                  <li class="hidden">
                                       <a
                                           href="/login"
                                           @click=${(e: Event) =>
@@ -321,18 +317,18 @@ export class HbMenu extends LitElement {
                         </li>
                         <li>
                             <a
-                                href="mailto:thank@heartbank.com"
+                                href="mailto:buddha@siliconwat.dev"
                                 target="_blank"
                                 @click=${() =>
                                     trackEvent("external_link", {
-                                        url: "mailto:thank@heartbank.com"
+                                        url: "mailto:buddha@siliconwat.dev"
                                     })}
                                 class="text-xs font-black text-gray-500 dark:text-gray-400">
                                 <span class="text-xl mr-2">💌</span>
-                                thank@heartbank.com
+                                buddha@siliconwat.dev
                             </a>
                         </li>
-                        <li>
+                        <li class="hidden">
                             <a
                                 href="https://wa.me/18005984265"
                                 target="_blank"
@@ -349,7 +345,7 @@ export class HbMenu extends LitElement {
                         </li>
                         <li>
                             <a
-                                href="https://facebook.com/heartbank"
+                                href="https://facebook.com/siliconwat"
                                 target="_blank"
                                 @click=${() =>
                                     trackEvent("external_link", {
@@ -361,7 +357,7 @@ export class HbMenu extends LitElement {
                         </li>
                         <li>
                             <a
-                                href="https://youtube.com/@heartbank"
+                                href="https://youtube.com/@SiliconWat"
                                 target="_blank"
                                 @click=${() =>
                                     trackEvent("external_link", {

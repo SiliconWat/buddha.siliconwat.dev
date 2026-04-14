@@ -3,7 +3,18 @@ import { LitElement } from "lit";
 export type Lang = "en" | "km";
 
 const i18nComponents = new Set<LitElement>();
-let currentLang: Lang = (localStorage.getItem("language") as Lang) ?? "km";
+
+function getDefaultLang(): Lang {
+    try {
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        return tz === "Asia/Phnom_Penh" ? "km" : "en";
+    } catch {
+        return "en";
+    }
+}
+
+let currentLang: Lang =
+    (localStorage.getItem("language") as Lang) ?? getDefaultLang();
 
 export function registerI18n(el: LitElement) {
     i18nComponents.add(el);
@@ -40,7 +51,7 @@ const translations: Record<string, Record<Lang, string>> = {
 
     // hb-header
     "header.openMenu": { en: "Open main menu", km: "បើកបញ្ជីចម្បង" },
-    "header.treasury": { en: "Treasury", km: "រតនាគារ" },
+    "header.treasury": { en: "Buddha", km: "ព្រះពុទ្ធ" },
     "header.beta": { en: "beta", km: "បេតា" },
     "header.khmer": { en: "Khmer", km: "ខ្មែរ" },
     "header.english": { en: "English", km: "អង់គ្លេស" },
@@ -55,8 +66,8 @@ const translations: Record<string, Record<Lang, string>> = {
     },
     "menu.logOut": { en: "Log Out", km: "ចាកចេញ" },
     "menu.createFamilyBank": {
-        en: "Create Family Bank",
-        km: "បង្កើតធនាគារគ្រួសារ"
+        en: "Join Waitlist",
+        km: "ចូលរួមក្នុងបញ្ជីរង់ចាំ"
     },
     "menu.phoneLogin": { en: "Phone Login", km: "ចូលប្រើតាមទូរស័ព្ទ" },
     "menu.settings": { en: "Settings", km: "ការកំណត់ប្រព័ន្ធ" },
@@ -312,7 +323,7 @@ const translations: Record<string, Record<Lang, string>> = {
     },
     "tutorial.notifications.step4": {
         en: "Allow notifications when your browser asks",
-        km: 'សូមចុច (Allow) នៅកម្មវិធីរុករក (Browser) របស់អ្នក ដើម្បីទទួលបានការជូនដំណឹង'
+        km: "សូមចុច (Allow) នៅកម្មវិធីរុករក (Browser) របស់អ្នក ដើម្បីទទួលបានការជូនដំណឹង"
     },
     "tutorial.notifications.step5": {
         en: "When you see this message, you have successfully registered for Push Notifications 🎉",

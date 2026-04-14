@@ -122,7 +122,7 @@ export class HbFooter extends LitElement {
                     <a
                         href="/tutorials"
                         @click=${(e: Event) => this.navigate(e, "/tutorials")}
-                        class="p-4 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 dark:hover:bg-gray-600 dark:bg-gray-700">
+                        class="hidden p-4 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 dark:hover:bg-gray-600 dark:bg-gray-700">
                         <div
                             class="flex justify-center items-center p-2 mx-auto mb-2 bg-gray-200 dark:bg-gray-600 rounded-full w-[48px] h-[48px] max-w-[48px] max-h-[48px]">
                             <svg
@@ -143,7 +143,7 @@ export class HbFooter extends LitElement {
                     <a
                         href="/aquarius"
                         @click=${(e: Event) => this.navigate(e, "/aquarius")}
-                        class="p-4 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 dark:hover:bg-gray-600 dark:bg-gray-700">
+                        class="hidden p-4 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 dark:hover:bg-gray-600 dark:bg-gray-700">
                         <div
                             class="flex justify-center items-center p-2 mx-auto mb-2 bg-gray-200 dark:bg-gray-600 rounded-full w-[48px] h-[48px] max-w-[48px] max-h-[48px]">
                             <svg
@@ -164,7 +164,7 @@ export class HbFooter extends LitElement {
                     <a
                         href="/install"
                         @click=${(e: Event) => this.navigate(e, "/install")}
-                        class="p-4 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 dark:hover:bg-gray-600 dark:bg-gray-700">
+                        class="hidden p-4 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 dark:hover:bg-gray-600 dark:bg-gray-700">
                         <div
                             class="flex justify-center items-center p-2 mx-auto mb-2 bg-gray-200 dark:bg-gray-600 rounded-full w-[48px] h-[48px] max-w-[48px] max-h-[48px]">
                             <svg
@@ -258,10 +258,8 @@ export class HbFooter extends LitElement {
                     <span
                         class="absolute w-8 h-1 -translate-x-1/2 bg-gray-300 rounded-lg top-3 left-1/2 dark:bg-gray-600"></span>
                     <h5
-                        class="mt-3 flex items-center justify-center text-base text-gray-500 dark:text-gray-400 font-medium">
-                        ${t("footer.slogan")} Heart<img
-                            class="inline w-[25px] h-[25px] mt-[-2px] ml-[-2px] mr-[-2px]"
-                            src="${hbLogo}" />ank®
+                        class="mt-3 -mr-3 flex items-center justify-center text-lg text-gray-500 dark:text-gray-400 font-black">
+                        Silicon Wat ℠
                     </h5>
                 </div>
             </div>
