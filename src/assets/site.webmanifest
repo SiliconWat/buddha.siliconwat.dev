@@ -3,8 +3,8 @@
     "short_name": "Silicon Wat ℠",
     "start_url": "/",
     "display": "standalone",
-    "background_color": "gold",
-    "theme_color": "gold",
+    "background_color": "orange",
+    "theme_color": "orange",
     "description": "ព្រះពុទ្ធ",
     "icons": [
         {
