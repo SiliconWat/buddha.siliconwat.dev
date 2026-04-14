@@ -1,5 +1,5 @@
 import { LitElement, html, css, unsafeCSS } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 import { Router } from "@lit-labs/router";
 import * as tailwind from "bundle-text:./styles.css";
 import { registerDarkMode, unregisterDarkMode } from "./dark-mode.js";
@@ -10,6 +10,7 @@ import "./pages/login.js";
 import "./pages/settings.js";
 import "./pages/install.js";
 import "./pages/tutorials.js";
+import "./pages/buddha.js";
 import "./pages/not-found.js";
 import "./components/hb-header.js";
 import "./components/hb-footer.js";
@@ -37,7 +38,7 @@ export class HbApp extends LitElement {
     }
 
     private router = new Router(this, [
-        { path: "/", render: () => html`<page-home></page-home>` },
+        { path: "/buddha", render: () => html`<page-home></page-home>` },
         { path: "/login", render: () => html`<page-login></page-login>` },
         {
             path: "/settings",
@@ -51,8 +52,18 @@ export class HbApp extends LitElement {
             path: "/tutorials",
             render: () => html`<page-tutorials></page-tutorials>`
         },
+        {
+            path: "/",
+            render: () => html`<page-buddha></page-buddha>`
+        },
         { path: "/*", render: () => html`<page-not-found></page-not-found>` }
     ]);
+
+    @state() private chromeHidden = false;
+
+    private handleToggleChrome = () => {
+        this.chromeHidden = !this.chromeHidden;
+    };
 
     private handleNavigate = (e: CustomEvent) => {
         this.router.goto(e.detail);
@@ -62,13 +73,20 @@ export class HbApp extends LitElement {
 
     render() {
         return html`
-            <hb-header @navigate=${this.handleNavigate}></hb-header>
+            ${this.chromeHidden
+                ? null
+                : html`<hb-header
+                      @navigate=${this.handleNavigate}></hb-header>`}
             <main
                 class="max-w-screen-xl mx-auto px-0 pt-[68px] pb-[70px]"
-                @navigate=${this.handleNavigate}>
+                @navigate=${this.handleNavigate}
+                @toggle-chrome=${this.handleToggleChrome}>
                 ${this.router.outlet()}
             </main>
-            <hb-footer @navigate=${this.handleNavigate}></hb-footer>
+            ${this.chromeHidden
+                ? null
+                : html`<hb-footer
+                      @navigate=${this.handleNavigate}></hb-footer>`}
         `;
     }
 }
