@@ -65,6 +65,10 @@ const translations: Record<string, Record<Lang, string>> = {
         km: "ភស្តុតាងនៃភាពជាមនុស្ស ℠"
     },
     "menu.logOut": { en: "Log Out", km: "ចាកចេញ" },
+    "menu.readBedok": {
+        en: "Read Bedok",
+        km: "អានបិដក"
+    },
     "menu.createFamilyBank": {
         en: "Join Waitlist",
         km: "ចូលរួមក្នុងបញ្ជីរង់ចាំ"
