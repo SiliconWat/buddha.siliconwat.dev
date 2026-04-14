@@ -47,7 +47,7 @@ export function t(key: string, ...args: string[]): string {
 }
 
 const translations: Record<string, Record<Lang, string>> = {
-    title: { en: "Thank with HeartBank®", km: "អរគុណជាមួយ HeartBank®" },
+    title: { en: "Silicon Wat ℠", km: "Silicon Wat ℠" },
 
     // hb-header
     "header.openMenu": { en: "Open main menu", km: "បើកបញ្ជីចម្បង" },

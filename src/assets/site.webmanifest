@@ -1,11 +1,11 @@
 {
-    "name": "រតនាគារ HeartBank®",
-    "short_name": "HeartBank®",
+    "name": "Silicon Wat ℠",
+    "short_name": "Silicon Wat ℠",
     "start_url": "/",
     "display": "standalone",
     "background_color": "gold",
     "theme_color": "gold",
-    "description": "អរគុណជាមួយ HeartBank®",
+    "description": "ព្រះពុទ្ធ",
     "icons": [
         {
             "src": "./web-app-manifest-192x192.png",
