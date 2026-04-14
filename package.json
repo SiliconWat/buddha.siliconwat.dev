@@ -1,0 +1,36 @@
+{
+    "name": "siliconwat.dev",
+    "version": "1.0.0",
+    "author": "Thon Ly",
+    "license": "HeartBank®",
+    "description": "Thank with HeartBank®",
+    "source": "src/index.html",
+    "scripts": {
+        "dev": "sudo rm -rf .parcel-cache dist && npm run build && npm run start",
+        "start": "parcel --port 60160",
+        "build": "parcel build && cp -r static/* dist/",
+        "emulators": "npm run build && firebase emulators:start",
+        "deploy": "npm run build && firebase deploy",
+        "fs": "firebase deploy --only firestore:rules",
+        "ports": "sudo ./close-ports.sh"
+    },
+    "dependencies": {
+        "@lit-labs/router": "^0.1.4",
+        "firebase": "^12.11.0",
+        "lit": "^3.3.2",
+        "three": "^0.183.2"
+    },
+    "devDependencies": {
+        "@parcel/config-default": "^2.16.4",
+        "@parcel/packager-raw-url": "^2.16.4",
+        "@parcel/transformer-inline-string": "^2.16.4",
+        "@parcel/transformer-webmanifest": "^2.16.4",
+        "@tailwindcss/cli": "^4.2.2",
+        "@tailwindcss/postcss": "^4.2.2",
+        "@types/three": "^0.183.1",
+        "buffer": "^6.0.3",
+        "parcel": "^2.16.4",
+        "tailwindcss": "^4.2.2",
+        "typescript": "^6.0.2"
+    }
+}

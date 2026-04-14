@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+@custom-variant dark (:host(.dark) &, &:where(.dark, .dark *));
+
+@theme {
+    --font-sans: "Noto Sans Khmer", sans-serif;
+    --animate-heartbeat: heartbeat 1.5s 1.5s infinite;
+}
+
+@keyframes heartbeat {
+    0%,
+    100% {
+        transform: scale(1);
+    }
+    14% {
+        transform: scale(1.3);
+    }
+    28% {
+        transform: scale(1);
+    }
+    42% {
+        transform: scale(1.3);
+    }
+    70% {
+        transform: scale(1);
+    }
+}
+
+@utility animate-heartbeat {
+    animation: heartbeat 1.5s 1.5s infinite;
+    transform-origin: center;
+}
+
+@keyframes rainbow {
+    0% {
+        fill: #ff0000;
+    }
+    17% {
+        fill: #ff8800;
+    }
+    33% {
+        fill: #ffff00;
+    }
+    50% {
+        fill: #00ff00;
+    }
+    67% {
+        fill: #0088ff;
+    }
+    83% {
+        fill: #8800ff;
+    }
+    100% {
+        fill: #ff0000;
+    }
+}
+
+@utility animate-rainbow {
+    animation: rainbow 9s linear infinite;
+}
