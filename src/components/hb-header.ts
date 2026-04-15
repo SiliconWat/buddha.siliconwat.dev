@@ -95,7 +95,7 @@ export class HbHeader extends LitElement {
                             @click=${this.share}
                             class="${"share" in navigator
                                 ? ""
-                                : "hidden"} mr-3">
+                                : "hidden"} mr-4">
                             <svg
                                 class="w-8 h-8 fill-gray-600 dark:fill-gray-400 mr-1"
                                 xmlns="http://www.w3.org/2000/svg"
