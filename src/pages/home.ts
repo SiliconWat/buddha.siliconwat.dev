@@ -59,7 +59,7 @@ export class PageHome extends LitElement {
                       <section
                           class="w-full h-full flex items-center justify-center">
                           <picture
-                              class="ml-[-16%] mb-[-20%] w-full scale-[1.1] md:scale-[1.5] animate-heartbeat">
+                              class="ml-[-16%] mb-[-20%] w-full scale-[1.08] md:scale-[1.5] animate-heartbeat">
                               <svg
                                   class="drop-shadow-2xl w-full h-full"
                                   fill="silver"
