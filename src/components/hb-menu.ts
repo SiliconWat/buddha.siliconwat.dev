@@ -369,6 +369,30 @@ export class HbMenu extends LitElement {
                         </li>
                         <li>
                             <a
+                                href="https://siliconwat.com"
+                                target="_blank"
+                                @click=${() =>
+                                    trackEvent("external_link", {
+                                        url: "Dharma"
+                                    })}
+                                class="text-xs text-gray-500 dark:text-gray-400"
+                                >${t("menu.dharma")}</a
+                            >
+                        </li>
+                        <li>
+                            <a
+                                href="https://siliconwat.org"
+                                target="_blank"
+                                @click=${() =>
+                                    trackEvent("external_link", {
+                                        url: "Sangha"
+                                    })}
+                                class="text-xs text-gray-500 dark:text-gray-400"
+                                >${t("menu.sangha")}</a
+                            >
+                        </li>
+                        <li>
+                            <a
                                 href="https://facebook.com/siliconwat"
                                 target="_blank"
                                 @click=${() =>

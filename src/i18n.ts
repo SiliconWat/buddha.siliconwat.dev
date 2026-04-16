@@ -69,6 +69,14 @@ const translations: Record<string, Record<Lang, string>> = {
         en: "Read Bedok",
         km: "អានបិដក"
     },
+    "menu.dharma": {
+        en: "Dharma",
+        km: "ព្រះធម៌"
+    },
+    "menu.sangha": {
+        en: "Sangha",
+        km: "ព្រះសង្ឃ"
+    },
     "menu.createFamilyBank": {
         en: "Join Waitlist",
         km: "ចូលរួមក្នុងបញ្ជីរង់ចាំ"
