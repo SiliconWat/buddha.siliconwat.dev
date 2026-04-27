@@ -76,7 +76,7 @@ export class HbMenu extends LitElement {
                 <a href="/" @click=${(e: Event) => this.navigate(e, "/")}>
                     <h2
                         class="text-xl font-black text-gray-500 dark:text-gray-400">
-                        Silicon Wat ℠
+                        ${t("menu.menuTitle")}
                     </h2>
                 </a>
                 <button
