@@ -51,7 +51,7 @@ const translations: Record<string, Record<Lang, string>> = {
 
     // hb-header
     "header.openMenu": { en: "Open main menu", km: "បើកបញ្ជីចម្បង" },
-    "header.treasury": { en: "Buddha", km: "ព្រះពុទ្ធ" },
+    "header.treasury": { en: "Dharma", km: "ព្រះធម៌" },
     "header.beta": { en: "beta", km: "បេតា" },
     "header.khmer": { en: "Khmer", km: "ខ្មែរ" },
     "header.english": { en: "English", km: "អង់គ្លេស" },
@@ -70,9 +70,9 @@ const translations: Record<string, Record<Lang, string>> = {
         en: "Read Bedok",
         km: "អានបិដក"
     },
-    "menu.dharma": {
-        en: "Dharma",
-        km: "ព្រះធម៌"
+    "menu.buddha": {
+        en: "Buddha",
+        km: "ព្រះពុទ្ធ"
     },
     "menu.sangha": {
         en: "Sangha",

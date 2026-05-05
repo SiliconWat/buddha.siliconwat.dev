@@ -367,18 +367,7 @@ export class HbMenu extends LitElement {
                                 +1 (800) 59-THANK
                             </a>
                         </li>
-                        <li>
-                            <a
-                                href="https://siliconwat.com"
-                                target="_blank"
-                                @click=${() =>
-                                    trackEvent("external_link", {
-                                        url: "Dharma"
-                                    })}
-                                class="text-xs text-gray-500 dark:text-gray-400"
-                                >${t("menu.dharma")}</a
-                            >
-                        </li>
+                        
                         <li>
                             <a
                                 href="https://siliconwat.org"

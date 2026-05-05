@@ -10,7 +10,7 @@ import "./pages/login.js";
 import "./pages/settings.js";
 import "./pages/install.js";
 import "./pages/tutorials.js";
-import "./pages/buddha.js";
+import "./pages/dharma.js";
 import "./pages/not-found.js";
 import "./components/hb-header.js";
 import "./components/hb-footer.js";
@@ -54,7 +54,7 @@ export class HbApp extends LitElement {
         },
         {
             path: "/",
-            render: () => html`<page-buddha></page-buddha>`
+            render: () => html`<page-dharma></page-dharma>`
         },
         { path: "/*", render: () => html`<page-not-found></page-not-found>` }
     ]);
