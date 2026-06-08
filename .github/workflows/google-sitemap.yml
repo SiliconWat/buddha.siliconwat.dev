@@ -127,7 +127,7 @@ jobs:
               -H "Authorization: Bearer $ACCESS_TOKEN" \
               -H 'Content-Length: 0' \
               "$target" || echo 000)
-            echo "  → $label: HTTP $code"
+            echo "  → $label: HTTP $code" >&2
             echo "$code"
           }
 
