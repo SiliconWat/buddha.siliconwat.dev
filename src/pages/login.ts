@@ -1,9 +1,10 @@
 import { LitElement, html, css, unsafeCSS } from "lit";
 import { customElement, state } from "lit/decorators.js";
-import * as tailwind from "bundle-text:../styles.css";
+import tailwind from "../styles.css?inline";
 import { registerDarkMode, unregisterDarkMode } from "../dark-mode.js";
 import { registerI18n, unregisterI18n, t, getLang } from "../i18n.js";
 import { trackEvent } from "../analytics.js";
+import { setSeoMeta } from "../seo.js";
 import { auth } from "../firebase.js";
 import {
     RecaptchaVerifier,
@@ -44,6 +45,13 @@ export class PageLogin extends LitElement {
         super.connectedCallback();
         registerDarkMode(this);
         registerI18n(this);
+        setSeoMeta({
+            title: "Sign In — Silicon Wat ℠",
+            description:
+                "Sign in to Silicon Wat — the Dharma jewel of the Three Jewels: Khmer Tipiṭaka transcription and scripture alignment.",
+            canonical: "https://siliconwat.dev/login",
+            ogType: "website"
+        });
         this.setupRecaptcha();
     }
 

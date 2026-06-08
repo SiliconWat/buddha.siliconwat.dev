@@ -1,11 +1,12 @@
 import { LitElement, html, css, unsafeCSS } from "lit";
 import { customElement, state } from "lit/decorators.js";
-import * as tailwind from "bundle-text:../styles.css";
+import tailwind from "../styles.css?inline";
 import { registerDarkMode, unregisterDarkMode } from "../dark-mode.js";
 import { auth } from "../firebase.js";
 import { onAuthStateChanged } from "firebase/auth";
 import { Crystal3B } from "../Crystal.js";
-import avatar from "url:../assets/avatar.webp";
+import { setSeoMeta } from "../seo.js";
+const avatar = "/assets/avatar.webp";
 
 @customElement("page-home")
 export class PageHome extends LitElement {
@@ -24,6 +25,13 @@ export class PageHome extends LitElement {
     connectedCallback() {
         super.connectedCallback();
         registerDarkMode(this);
+        setSeoMeta({
+            title: "Buddha — Silicon Wat ℠",
+            description:
+                "Buddha at Silicon Wat — the Dharma jewel of the Three Jewels: Khmer Tipiṭaka transcription and scripture alignment, building the Living Tipiṭaka substrate.",
+            canonical: "https://siliconwat.dev/buddha",
+            ogType: "website"
+        });
 
         onAuthStateChanged(auth, (user) => {
             this.signedIn = !!user;
@@ -84,6 +92,14 @@ export class PageHome extends LitElement {
                       </section>
                   </aside>
               `
-            : html`<canvas></canvas>`;
+            : html`
+                  <h1 class="sr-only">Buddha — Silicon Wat ℠</h1>
+                  <p class="sr-only">
+                      Buddha at Silicon Wat — the Dharma jewel of the Three
+                      Jewels: Khmer Tipiṭaka transcription and scripture
+                      alignment, building the Living Tipiṭaka substrate.
+                  </p>
+                  <canvas></canvas>
+              `;
     }
 }

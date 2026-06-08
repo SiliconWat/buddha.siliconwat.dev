@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTFExporter } from "three/examples/jsm/exporters/GLTFExporter.js";
-import crystal from "url:./assets/crystal.3b.glb";
+const crystal = "/assets/crystal.3b.glb";
 
 export class Crystal3B {
     private readonly isDesktop = window.matchMedia("(pointer: fine)").matches;

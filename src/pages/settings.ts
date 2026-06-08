@@ -1,14 +1,15 @@
 import { LitElement, html, css, unsafeCSS } from "lit";
 import { customElement, state } from "lit/decorators.js";
-import * as tailwind from "bundle-text:../styles.css";
+import tailwind from "../styles.css?inline";
 import { registerDarkMode, unregisterDarkMode } from "../dark-mode.js";
 import { registerI18n, unregisterI18n, t } from "../i18n.js";
 import { trackEvent } from "../analytics.js";
+import { setSeoMeta } from "../seo.js";
 import { auth, db, messaging } from "../firebase.js";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { getToken } from "firebase/messaging";
-import swUrl from "url:../firebase-messaging-sw.js";
+const swUrl = "/firebase-messaging-sw.js";
 
 const VAPID_KEY =
     "BPBFkwm9beWY2ZuMw-LIEg7Bjnx54XMR2hcuq_oBLK03Qow6GpNtoYY59MDP6rHAim1pDlIlY3gtJZhJqqsXut8";
@@ -35,6 +36,13 @@ export class PageSettings extends LitElement {
         super.connectedCallback();
         registerDarkMode(this);
         registerI18n(this);
+        setSeoMeta({
+            title: "Settings — Silicon Wat ℠",
+            description:
+                "Settings for Silicon Wat — the Dharma jewel of the Three Jewels: Khmer Tipiṭaka transcription and scripture alignment.",
+            canonical: "https://siliconwat.dev/settings",
+            ogType: "website"
+        });
 
         onAuthStateChanged(auth, (user) => {
             if (!user) {

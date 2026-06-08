@@ -1,0 +1,6 @@
+# Canonical siliconwat.dev URLs to prior-art-snapshot on push (one per line; # = comment).
+# Add a line whenever a new canonical/published surface ships.
+# SPA caveat: Internet Archive captures these routes adequately for prior-art
+# (URL + rendered metadata at a timestamp); SPA fidelity imperfect by design.
+
+https://siliconwat.dev/

@@ -1,7 +1,7 @@
 import { LitElement, html, css, unsafeCSS } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { Router } from "@lit-labs/router";
-import * as tailwind from "bundle-text:./styles.css";
+import tailwind from "./styles.css?inline";
 import { registerDarkMode, unregisterDarkMode } from "./dark-mode.js";
 import { trackEvent } from "./analytics.js";
 

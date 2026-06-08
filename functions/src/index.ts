@@ -1,4 +1,4 @@
-import { previewLink } from "./og";
+import { linkPreview } from "./og";
 import { onEventCreated } from "./track";
 
-export { previewLink, onEventCreated };
+export { linkPreview, onEventCreated };

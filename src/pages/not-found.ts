@@ -1,6 +1,6 @@
 import { LitElement, html, css, unsafeCSS } from "lit";
 import { customElement } from "lit/decorators.js";
-import * as tailwind from "bundle-text:../styles.css";
+import tailwind from "../styles.css?inline";
 import { registerDarkMode, unregisterDarkMode } from "../dark-mode.js";
 import { registerI18n, unregisterI18n, t } from "../i18n.js";
 

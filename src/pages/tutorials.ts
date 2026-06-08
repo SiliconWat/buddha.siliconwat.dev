@@ -1,9 +1,10 @@
 import { LitElement, html, css, unsafeCSS } from "lit";
 import { customElement, state } from "lit/decorators.js";
-import * as tailwind from "bundle-text:../styles.css";
+import tailwind from "../styles.css?inline";
 import { registerDarkMode, unregisterDarkMode } from "../dark-mode.js";
 import { registerI18n, unregisterI18n, t, getLang } from "../i18n.js";
 import { trackEvent } from "../analytics.js";
+import { setSeoMeta } from "../seo.js";
 
 interface Tutorial {
     key: string;
@@ -57,6 +58,13 @@ export class PageTutorials extends LitElement {
         super.connectedCallback();
         registerDarkMode(this);
         registerI18n(this);
+        setSeoMeta({
+            title: "Tutorials — Silicon Wat ℠",
+            description:
+                "Tutorials for Silicon Wat — the Dharma jewel of the Three Jewels: Khmer Tipiṭaka transcription and scripture alignment.",
+            canonical: "https://siliconwat.dev/tutorials",
+            ogType: "website"
+        });
         this.handleHashChange();
         window.addEventListener("hashchange", this.handleHashChange);
         window.addEventListener("tutorials:reset", this.handleHashChange);

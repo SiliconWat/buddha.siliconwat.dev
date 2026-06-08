@@ -1,9 +1,10 @@
 import { LitElement, html, css, unsafeCSS } from "lit";
 import { customElement, state } from "lit/decorators.js";
-import * as tailwind from "bundle-text:../styles.css";
+import tailwind from "../styles.css?inline";
 import { registerDarkMode, unregisterDarkMode } from "../dark-mode.js";
 import { registerI18n, unregisterI18n, t } from "../i18n.js";
 import { trackEvent } from "../analytics.js";
+import { setSeoMeta } from "../seo.js";
 
 @customElement("page-install")
 export class PageInstall extends LitElement {
@@ -22,6 +23,13 @@ export class PageInstall extends LitElement {
         super.connectedCallback();
         registerDarkMode(this);
         registerI18n(this);
+        setSeoMeta({
+            title: "Install — Silicon Wat ℠",
+            description:
+                "Install Silicon Wat — the Dharma jewel of the Three Jewels: Khmer Tipiṭaka transcription and scripture alignment.",
+            canonical: "https://siliconwat.dev/install",
+            ogType: "website"
+        });
 
         if (!window.matchMedia("(display-mode: standalone)").matches) {
             window.history.replaceState({}, "", "/tutorials#installApp");

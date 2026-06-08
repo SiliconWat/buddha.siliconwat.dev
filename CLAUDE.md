@@ -1,49 +1,23 @@
-# CLAUDE.md
+# CLAUDE.md — `buddha.siliconwat.dev`
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+"buddha" subdomain on siliconwat.dev (Dharma TLD — Khmer Tipiṭaka transcription + alignment work). Lit + Vite + Tailwind v4 + Firebase. SEO stack: build-time per-route prerender (`scripts/prerender-meta.mjs`), `src/seo.ts`, static robots/sitemap/IndexNow key, 3 SEO workflows (indexnow / google-sitemap / snapshot).
 
-## Project Overview
-
-HeartBank® Treasury — a Lit web components SPA with Firebase backend, bundled by Parcel, styled with Tailwind CSS v4.
+Project-wide context (Three-Jewels architecture, Tipiṭaka alignment, stack conventions, hard constraints) lives in the **root** `HeartBank®/CLAUDE.md` and project-wide memory (`project_silicon_wat.md`, `project_tipitaka_alignment.md`). No codebase memory dir yet.
 
 ## Commands
 
-- `npm start` — dev server (port 57880)
-- `npm run build` — production build to `dist/`
+- `npm start` / `npm run dev` — Vite dev server (port 60160)
+- `npm run build` — `vite build` + per-route SEO prerender to `dist/`
+- `npm run preview` — preview the production build (port 60160)
 - `npm run emulators` — build + Firebase emulators (UI on :4003)
 - `npm run deploy` — build + deploy to Firebase Hosting
 - `npm run ports` — kill emulator ports
 
-Functions (`functions/` directory):
-
-- `npm run build` — compile TypeScript to `lib/`
-- `npm run deploy` — build + deploy functions only
-
-## Architecture
-
-**Lit Web Components** with Shadow DOM. Entry: `src/index.html` → `src/app.ts` (`<hb-app>`).
-
-**Routing**: `@lit-labs/router` in `app.ts`. Components dispatch `CustomEvent("navigate", { detail: path, bubbles: true, composed: true })` to trigger `router.goto()`. The `@navigate` listener must be on the parent element containing the dispatching component (header, main, footer each need their own listener in `app.ts`).
-
-**Component pattern**: Every component imports Tailwind as `bundle-text:../styles.css`, applies it via `unsafeCSS(tailwind)` in static styles, and registers/unregisters dark mode in lifecycle callbacks.
-
-**Dark mode**: Centralized registry in `dark-mode.ts`. Components call `registerDarkMode(this)` / `unregisterDarkMode(this)`. Reads `localStorage("color-scheme")` → falls back to system preference. Custom Tailwind variant: `@custom-variant dark (:host(.dark) &)` enables `dark:` utilities inside Shadow DOM.
-
-**Asset imports**: Use `url:` prefix for asset URLs (images, GLB models), `bundle-text:` for inline strings (CSS). Declared in `declarations.d.ts`.
+Functions: `cd functions && npm run build` / `npm run deploy`.
 
 ## Firebase
 
 - Project: `siliconwat-98373`, region: `asia-southeast1`
 - Emulator ports: Auth :9093, Firestore :8083, Storage :9193, Functions :5004, Hosting :5003
-- `src/firebase.ts` auto-connects to emulators on localhost
-- Hosting rewrites: `/3/**` → `linkPreview` function (crawler OG tags), `**` → `/index.html` (SPA)
-- Auth: passwordless email link sign-in
-
-## Key Conventions
-
-- Component prefixes: `hb-*` for layout/UI, `page-*` for routes
-- TypeScript strict mode with `experimentalDecorators` for Lit decorators (`@customElement`, `@state`, `@property`)
-- Tailwind v4 with `@theme`, `@utility`, and `@keyframes` blocks in `src/styles.css`
-- Avoid `lang` as a property name in LitElement subclasses (conflicts with `HTMLElement.lang`)
-- Use `firstUpdated()` (not `connectedCallback`) to query shadow DOM elements after first render
-- Z-index layering: overlays z-40, menu panel z-50, footer z-40, footer tab z-30
+- Auth: passwordless email link
+- Hosting rewrites: `/3/**` → `linkPreview` function (OG tags), `**` → `/index.html` (SPA)

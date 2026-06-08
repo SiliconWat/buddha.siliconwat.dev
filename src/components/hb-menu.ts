@@ -1,13 +1,13 @@
 import { LitElement, html, css, unsafeCSS } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import * as tailwind from "bundle-text:../styles.css";
+import tailwind from "../styles.css?inline";
 import { registerDarkMode, unregisterDarkMode } from "../dark-mode.js";
 import { registerI18n, unregisterI18n, t } from "../i18n.js";
 import { trackEvent } from "../analytics.js";
 import { auth } from "../firebase.js";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import hbLogo from "url:../assets/hb.svg";
-import waLogo from "url:../assets/wa.svg";
+const hbLogo = "/assets/hb.svg";
+const waLogo = "/assets/wa.svg";
 
 @customElement("hb-menu")
 export class HbMenu extends LitElement {
