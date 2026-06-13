@@ -22,6 +22,7 @@ export class HbFooter extends LitElement {
     ];
 
     @property({ type: Boolean, reflect: true }) open = false;
+    @property({ type: Boolean }) collapsed = false;
     @state() private startY = 0;
     @state() private dragging = false;
 
@@ -245,10 +246,10 @@ export class HbFooter extends LitElement {
                 </div>
             </div>
             <div
-                class="fixed bottom-0 left-0 right-0 z-30 cursor-pointer ${this
+                class="fixed bottom-0 left-0 right-0 z-30 cursor-pointer transition-transform duration-300 ${this
                     .open
                     ? "hidden"
-                    : ""}"
+                    : ""} ${this.collapsed ? "translate-y-full" : ""}"
                 @click=${this.toggle}
                 @touchstart=${this.onTouchStart}
                 @touchmove=${this.onTouchMove}

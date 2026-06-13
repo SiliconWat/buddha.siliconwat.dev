@@ -55,16 +55,11 @@
             rel="stylesheet" />
         <link rel="manifest" href="/assets/site.webmanifest" />
         <link rel="stylesheet" href="./styles.css" />
-        <style>
-            .grecaptcha-badge {
-                visibility: hidden !important;
-            }
-        </style>
+        <script type="module" src="./index.ts"></script>
     </head>
     <body
         class="bg-gray-200 dark:bg-gray-600 min-h-screen flex items-center justify-center">
         <hb-app></hb-app>
-        <script type="module" src="./app.ts"></script>
         <script>
             if (location.hostname !== "localhost") {
                 const s = document.createElement("script");

@@ -102,6 +102,26 @@ export class HbMenu extends LitElement {
                 </button>
                 <div class="h-full py-4 overflow-y-auto">
                     <ul class="space-y-2 font-medium">
+                        <li class="hidden">
+                            <a
+                                href="/about"
+                                @click=${(e: Event) =>
+                                    this.navigate(e, "/about")}
+                                class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                <svg
+                                    class="shrink-0 w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
+                                    aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="violet"
+                                    viewBox="0 0 512 512">
+                                    <path
+                                        d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336l24 0 0-64-24 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l48 0c13.3 0 24 10.7 24 24l0 88 8 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-80 0c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" />
+                                </svg>
+                                <span class="flex-1 ms-3 whitespace-nowrap"
+                                    >${t("menu.about")}</span
+                                >
+                            </a>
+                        </li>
                         ${this.signedIn
                             ? html`
                                   <li>
@@ -341,15 +361,15 @@ export class HbMenu extends LitElement {
                         </li>
                         <li>
                             <a
-                                href="mailto:buddha@siliconwat.dev"
+                                href="mailto:dharma@siliconwat.dev"
                                 target="_blank"
                                 @click=${() =>
                                     trackEvent("external_link", {
-                                        url: "mailto:buddha@siliconwat.dev"
+                                        url: "mailto:dharma@siliconwat.dev"
                                     })}
                                 class="text-xs font-black text-gray-500 dark:text-gray-400">
                                 <span class="text-xl mr-2">💌</span>
-                                buddha@siliconwat.dev
+                                dharma@siliconwat.dev
                             </a>
                         </li>
                         <li class="hidden">
@@ -367,7 +387,18 @@ export class HbMenu extends LitElement {
                                 +1 (800) 59-THANK
                             </a>
                         </li>
-                        
+                        <li>
+                            <a
+                                href="https://siliconwat.com"
+                                target="_blank"
+                                @click=${() =>
+                                    trackEvent("external_link", {
+                                        url: "Buddha"
+                                    })}
+                                class="text-xs text-gray-500 dark:text-gray-400"
+                                >${t("menu.buddha")}</a
+                            >
+                        </li>
                         <li>
                             <a
                                 href="https://siliconwat.org"

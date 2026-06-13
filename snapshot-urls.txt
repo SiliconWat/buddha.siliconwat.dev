@@ -4,3 +4,4 @@
 # (URL + rendered metadata at a timestamp); SPA fidelity imperfect by design.
 
 https://siliconwat.dev/
+https://siliconwat.dev/about

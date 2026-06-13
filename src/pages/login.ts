@@ -2,14 +2,14 @@ import { LitElement, html, css, unsafeCSS } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import tailwind from "../styles.css?inline";
 import { registerDarkMode, unregisterDarkMode } from "../dark-mode.js";
-import { registerI18n, unregisterI18n, t, getLang } from "../i18n.js";
-import { trackEvent } from "../analytics.js";
 import { setSeoMeta } from "../seo.js";
 import { auth } from "../firebase.js";
 import {
-    RecaptchaVerifier,
-    signInWithPhoneNumber,
-    ConfirmationResult
+    sendSignInLinkToEmail,
+    isSignInWithEmailLink,
+    signInWithEmailLink,
+    EmailAuthProvider,
+    linkWithCredential
 } from "firebase/auth";
 
 @customElement("page-login")
@@ -23,120 +23,143 @@ export class PageLogin extends LitElement {
         `
     ];
 
-    @state() private phone = "";
-    @state() private countryCode = getLang() === "km" ? "+855" : "+1";
-    @state() private code = "";
+    @state() private email = "";
     @state() private status:
         | "idle"
         | "sending"
         | "sent"
-        | "verifying"
+        | "completing"
         | "success"
         | "error" = "idle";
     @state() private message = "";
-    @state() private error = "";
-
-    private confirmationResult: ConfirmationResult | null = null;
-    private recaptchaVerifier: RecaptchaVerifier | null = null;
-
-    private recaptchaContainer: HTMLDivElement | null = null;
 
     connectedCallback() {
         super.connectedCallback();
         registerDarkMode(this);
-        registerI18n(this);
         setSeoMeta({
-            title: "Sign In — Silicon Wat ℠",
+            title: "Login — Silicon Wat ℠",
             description:
-                "Sign in to Silicon Wat — the Dharma jewel of the Three Jewels: Khmer Tipiṭaka transcription and scripture alignment.",
+                "Sign in to Silicon Wat ℠ — the Dharma jewel: Khmer Tipiṭaka transcription and scripture alignment. Verified by Proof of Humanity℠.",
             canonical: "https://siliconwat.dev/login",
             ogType: "website"
         });
-        this.setupRecaptcha();
+        this.handleEmailLink();
     }
 
     disconnectedCallback() {
         super.disconnectedCallback();
         unregisterDarkMode(this);
-        unregisterI18n(this);
-        this.recaptchaContainer?.remove();
     }
 
-    private setupRecaptcha() {
-        this.recaptchaContainer = document.createElement("div");
-        this.recaptchaContainer.id = "recaptcha-container";
-        document.body.appendChild(this.recaptchaContainer);
-        this.recaptchaVerifier = new RecaptchaVerifier(
-            auth,
-            this.recaptchaContainer,
-            { size: "invisible" }
-        );
+    private async handleEmailLink() {
+        if (isSignInWithEmailLink(auth, window.location.href)) {
+            this.status = "completing";
+            let email = window.localStorage.getItem("emailForSignIn");
+            if (!email) {
+                email =
+                    window.prompt(
+                        "Please provide your email for confirmation"
+                    ) ?? "";
+            }
+            try {
+                await auth.authStateReady();
+                const shouldLink =
+                    window.localStorage.getItem("linkToAnonymous") === "true";
+                if (shouldLink && auth.currentUser?.isAnonymous) {
+                    const credential = EmailAuthProvider.credentialWithLink(
+                        email,
+                        window.location.href
+                    );
+                    await linkWithCredential(auth.currentUser, credential);
+                    await auth.currentUser.reload();
+                    await auth.updateCurrentUser(auth.currentUser);
+                } else {
+                    await signInWithEmailLink(
+                        auth,
+                        email,
+                        window.location.href
+                    );
+                }
+                const linkedEmails = JSON.parse(
+                    window.localStorage.getItem("linkedEmails") ?? "[]"
+                );
+                if (!linkedEmails.includes(email)) {
+                    linkedEmails.push(email);
+                    window.localStorage.setItem(
+                        "linkedEmails",
+                        JSON.stringify(linkedEmails)
+                    );
+                }
+                window.localStorage.removeItem("linkToAnonymous");
+                window.localStorage.removeItem("emailForSignIn");
+                this.status = "success";
+                this.message = linkedEmails.includes(email)
+                    ? "You have been logged in successfully!"
+                    : "Your email has been linked successfully!";
+
+                window.history.pushState({}, "", "/");
+                setTimeout(() => {
+                    this.dispatchEvent(
+                        new CustomEvent("navigate", {
+                            detail: "/",
+                            bubbles: true,
+                            composed: true
+                        })
+                    );
+                }, 2500);
+            } catch (error: any) {
+                if (error.code === "auth/email-already-in-use") {
+                    window.localStorage.setItem(
+                        "linkedEmails",
+                        JSON.stringify(`[${email}]`)
+                    );
+                    this.status = "error";
+                    this.message = "Sorry, please try one more time.";
+                } else {
+                    this.status = "error";
+                    this.message =
+                        error.message ??
+                        "Failed to link email. Please try again.";
+                }
+            }
+        }
     }
 
-    private resetToPhone() {
-        this.status = "idle";
-        this.phone = "";
-        this.code = "";
-        this.error = "";
-        this.confirmationResult = null;
-        this.recaptchaContainer?.remove();
-        this.setupRecaptcha();
-    }
-
-    private async handleSendCode(e: Event) {
+    private async handleSubmit(e: Event) {
         e.preventDefault();
-        if (!this.phone) return;
+        if (!this.email) return;
 
-        const fullNumber = this.countryCode + this.phone.replace(/\D/g, "");
         this.status = "sending";
+        const actionCodeSettings = {
+            url: window.location.origin + "/login",
+            handleCodeInApp: true
+        };
+
         try {
-            this.confirmationResult = await signInWithPhoneNumber(
-                auth,
-                fullNumber,
-                this.recaptchaVerifier!
+            await sendSignInLinkToEmail(auth, this.email, actionCodeSettings);
+            window.localStorage.setItem("emailForSignIn", this.email);
+            const linkedEmails = JSON.parse(
+                window.localStorage.getItem("linkedEmails") ?? "[]"
+            );
+            const shouldLink =
+                auth.currentUser?.isAnonymous &&
+                !linkedEmails.includes(this.email);
+            window.localStorage.setItem(
+                "linkToAnonymous",
+                shouldLink ? "true" : "false"
             );
             this.status = "sent";
-            this.message = t("login.codeSent", fullNumber);
-            trackEvent("send_code", { phone: fullNumber });
+            this.message = `A sign-in link has been sent to ${this.email}. Check your inbox or spam folder!`;
         } catch (error: any) {
             this.status = "error";
-            this.message = error.message ?? t("login.sendFailed");
+            this.message =
+                error.message ??
+                "Failed to send sign-in link. Please try again.";
         }
     }
 
-    private async handleVerifyCode(e: Event) {
-        e.preventDefault();
-        if (!this.code || !this.confirmationResult) return;
-
-        this.status = "verifying";
-        try {
-            await this.confirmationResult.confirm(this.code);
-            this.status = "success";
-            this.message = t("login.success");
-            trackEvent("login_success");
-
-            window.history.pushState({}, "", "/");
-            setTimeout(() => {
-                this.dispatchEvent(
-                    new CustomEvent("navigate", {
-                        detail: "/",
-                        bubbles: true,
-                        composed: true
-                    })
-                );
-            }, 2500);
-        } catch (error: any) {
-            this.status = "sent";
-            trackEvent("login_failed", { error: error.code ?? "unknown" });
-            this.error =
-                error.code === "auth/invalid-verification-code"
-                    ? t("login.invalidCode")
-                    : (error.message ?? t("login.loginFailed"));
-        }
-    }
-
-    private renderContent() {
-        if (this.status === "verifying") {
+    render() {
+        if (this.status === "completing") {
             return html`
                 <section
                     class="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-0">
@@ -145,7 +168,7 @@ export class PageLogin extends LitElement {
                         <div class="p-6 space-y-4 sm:p-8">
                             <p
                                 class="text-center text-gray-500 dark:text-gray-400">
-                                ${t("login.loggingIn")}
+                                Logging you in...
                             </p>
                         </div>
                     </div>
@@ -184,78 +207,6 @@ export class PageLogin extends LitElement {
             `;
         }
 
-        if (this.status === "sent") {
-            return html`
-                <section
-                    class="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-0">
-                    <div
-                        class="w-full bg-white rounded-lg shadow dark:border sm:max-w-md dark:bg-gray-800 dark:border-gray-700">
-                        <div class="p-6 space-y-4 sm:p-8">
-                            <h1
-                                class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-                                ${t("login.enterCode")}
-                            </h1>
-                            <div
-                                class="p-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-700 dark:text-green-400"
-                                role="alert">
-                                ${this.message}
-                            </div>
-                            <form
-                                class="space-y-4"
-                                @submit=${this.handleVerifyCode}>
-                                <label
-                                    for="hb-code"
-                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                                    >${t("login.verificationCode")}</label
-                                >
-                                <input
-                                    type="text"
-                                    inputmode="numeric"
-                                    pattern="[0-9]{6}"
-                                    maxlength="6"
-                                    name="code"
-                                    id="hb-code"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-2xl tracking-[0.5em] text-center rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    placeholder="000000"
-                                    required
-                                    .value=${this.code}
-                                    @input=${(e: Event) =>
-                                        (this.code = (
-                                            e.target as HTMLInputElement
-                                        ).value)} />
-
-                                ${this.error
-                                    ? html`
-                                          <div
-                                              class="p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-700 dark:text-red-400"
-                                              role="alert">
-                                              ${this.error}
-                                          </div>
-                                      `
-                                    : ""}
-
-                                <button
-                                    type="submit"
-                                    class="w-full text-white bg-yellow-500 hover:bg-yellow-600 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-yellow-500 dark:hover:bg-yellow-600 dark:focus:ring-yellow-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                                    ?disabled=${this.code.length !== 6}>
-                                    ${t("login.verify")}
-                                </button>
-                            </form>
-                            <button
-                                type="button"
-                                @click=${this.resetToPhone}
-                                class="w-full text-sm text-blue-600 hover:underline dark:text-blue-400 mt-2 text-center">
-                                ${t("login.differentPhone")}
-                            </button>
-                        </div>
-                    </div>
-                </section>
-                <p class="text-center text-sm text-gray-500 dark:text-gray-400">
-                    ${t("login.footer")}
-                </p>
-            `;
-        }
-
         return html`
             <section
                 class="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-0">
@@ -264,48 +215,53 @@ export class PageLogin extends LitElement {
                     <div class="p-6 space-y-4 sm:p-8">
                         <h1
                             class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-                            ${t("login.title")}
+                            Silicon Wat ℠ Login
                         </h1>
-                        <form class="space-y-4" @submit=${this.handleSendCode}>
+                        <form class="space-y-4" @submit=${this.handleSubmit}>
                             <label
-                                for="hb-phone"
+                                for="hb-email"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                                >${t("login.yourPhone")}</label
+                                >Your Email</label
                             >
-                            <div class="flex mb-6">
-                                <select
-                                    class="outline-none bg-gray-50 border border-gray-300 border-e-0 text-gray-900 text-base rounded-s-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    .value=${this.countryCode}
-                                    @change=${(e: Event) =>
-                                        (this.countryCode = (
-                                            e.target as HTMLSelectElement
-                                        ).value)}
-                                    ?disabled=${this.status === "sending"}>
-                                    <option value="+855">🇰🇭 +855</option>
-                                    <option value="+1">🇺🇸 +1</option>
-                                </select>
+                            <div class="relative mb-6">
+                                <div
+                                    class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
+                                    <svg
+                                        class="w-4 h-4 text-gray-500 dark:text-gray-400"
+                                        aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="currentColor"
+                                        viewBox="0 0 20 16">
+                                        <path
+                                            d="m10.036 8.278 9.258-7.79A1.979 1.979 0 0 0 18 0H2A1.987 1.987 0 0 0 .641.541l9.395 7.737Z" />
+                                        <path
+                                            d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z" />
+                                    </svg>
+                                </div>
                                 <input
-                                    type="tel"
-                                    name="phone"
-                                    id="hb-phone"
-                                    class="bg-gray-50 outline-none border border-gray-300 text-gray-900 text-base rounded-e-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    placeholder=${this.countryCode === "+855"
-                                        ? "12 345 678"
-                                        : "(800) 59-THANK"}
+                                    type="email"
+                                    name="email"
+                                    id="hb-email"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    placeholder="thank@siliconwat.dev"
                                     required
-                                    .value=${this.phone}
-                                    @input=${(e: Event) => {
-                                        const input =
-                                            e.target as HTMLInputElement;
-                                        this.phone = input.value.replace(
-                                            /\D/g,
-                                            ""
-                                        );
-                                        input.value = this.phone;
-                                    }}
+                                    .value=${this.email}
+                                    @input=${(e: Event) =>
+                                        (this.email = (
+                                            e.target as HTMLInputElement
+                                        ).value)}
                                     ?disabled=${this.status === "sending"} />
                             </div>
 
+                            ${this.status === "sent"
+                                ? html`
+                                      <div
+                                          class="p-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-700 dark:text-green-400"
+                                          role="alert">
+                                          ${this.message}
+                                      </div>
+                                  `
+                                : ""}
                             ${this.status === "error"
                                 ? html`
                                       <div
@@ -318,23 +274,19 @@ export class PageLogin extends LitElement {
 
                             <button
                                 type="submit"
-                                class="w-full text-white bg-yellow-500 hover:bg-yellow-600 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-yellow-500 dark:hover:bg-yellow-600 dark:focus:ring-yellow-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                                class="w-full text-white bg-purple-500 hover:bg-purple-600 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-purple-500 dark:hover:bg-purple-600 dark:focus:ring-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
                                 ?disabled=${this.status === "sending"}>
                                 ${this.status === "sending"
-                                    ? t("login.sending")
-                                    : t("login.sendCode")}
+                                    ? "Sending..."
+                                    : "Send Sign-In Link"}
                             </button>
                         </form>
                     </div>
                 </div>
             </section>
             <p class="text-center text-sm text-gray-500 dark:text-gray-400">
-                ${t("login.footer")}
+                ❤️ Proof of Humanity by HeartBank®
             </p>
         `;
-    }
-
-    render() {
-        return html` ${this.renderContent()} `;
     }
 }

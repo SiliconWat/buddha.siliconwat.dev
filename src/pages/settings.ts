@@ -3,16 +3,20 @@ import { customElement, state } from "lit/decorators.js";
 import tailwind from "../styles.css?inline";
 import { registerDarkMode, unregisterDarkMode } from "../dark-mode.js";
 import { registerI18n, unregisterI18n, t } from "../i18n.js";
-import { trackEvent } from "../analytics.js";
-import { setSeoMeta } from "../seo.js";
+import { trackEvent, trackError } from "../analytics.js";
 import { auth, db, messaging } from "../firebase.js";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { getToken } from "firebase/messaging";
-const swUrl = "/firebase-messaging-sw.js";
 
+// PER-REPO MANUAL SETUP: this is heartbank.net's Web-Push VAPID key and MUST be
+// replaced with siliconwat.dev's own Firebase Cloud Messaging Web-Push key
+// pair (Project Settings → Cloud Messaging → Web configuration → Web Push
+// certificates). Until then, enabling notifications will fail at getToken();
+// settings still renders and degrades gracefully (the toggle shows
+// "unsupported" on devices without FCM support).
 const VAPID_KEY =
-    "BPBFkwm9beWY2ZuMw-LIEg7Bjnx54XMR2hcuq_oBLK03Qow6GpNtoYY59MDP6rHAim1pDlIlY3gtJZhJqqsXut8";
+    "BOmqoiL7pAVdKzPI-BMaEWxEuQOATZoT7CuNqeXW1cX6cEc8wJy6m1QHVBuZls4JjTNz9cciM_BXbYNvLollAj4";
 
 @customElement("page-settings")
 export class PageSettings extends LitElement {
@@ -36,13 +40,6 @@ export class PageSettings extends LitElement {
         super.connectedCallback();
         registerDarkMode(this);
         registerI18n(this);
-        setSeoMeta({
-            title: "Settings — Silicon Wat ℠",
-            description:
-                "Settings for Silicon Wat — the Dharma jewel of the Three Jewels: Khmer Tipiṭaka transcription and scripture alignment.",
-            canonical: "https://siliconwat.dev/settings",
-            ogType: "website"
-        });
 
         onAuthStateChanged(auth, (user) => {
             if (!user) {
@@ -88,8 +85,9 @@ export class PageSettings extends LitElement {
             return;
         }
 
-        this.swRegistration = await navigator.serviceWorker.register(swUrl);
-        await navigator.serviceWorker.ready;
+        // The app-wide service worker (registered in app.ts) handles FCM in
+        // the background; reuse its registration for getToken.
+        this.swRegistration = await navigator.serviceWorker.ready;
 
         const snap = await getDoc(doc(db, "users", uid));
         this.notificationsEnabled = snap.data()?.fcmToken ? true : false;
@@ -148,6 +146,7 @@ export class PageSettings extends LitElement {
             }
         } catch (error: any) {
             this.message = error.message;
+            trackError("settings.notifications", error);
         }
         this.loading = false;
     }
@@ -202,22 +201,6 @@ export class PageSettings extends LitElement {
                                           : "text-gray-800 bg-gray-50 dark:bg-gray-700 dark:text-gray-400"}"
                                       role="alert">
                                       ${this.message}
-                                  </div>
-                              `
-                            : ""}
-                        ${this.notificationsEnabled && !this.isStandalone
-                            ? html`
-                                  <div
-                                      class="p-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-700 dark:text-yellow-400"
-                                      role="alert">
-                                      ${t("settings.installPrompt")}
-                                      <a
-                                          href="/install"
-                                          @click=${(e: Event) =>
-                                              this.navigate(e, "/install")}
-                                          class="font-medium underline hover:no-underline">
-                                          ${t("settings.installLink")}
-                                      </a>
                                   </div>
                               `
                             : ""}

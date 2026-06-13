@@ -9,7 +9,7 @@
 //
 // Landing variant: no publications corpus — just a home page plus a small set
 // of STATIC_ROUTES. Keep this in sync with the per-page setSeoMeta() calls in
-// src/pages/*.
+// src/pages/*.ts (currently /about).
 
 import fs from "node:fs/promises";
 import path from "node:path";
@@ -33,30 +33,10 @@ const escHtml = (s) =>
 const escRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 const STATIC_ROUTES = {
-    "/buddha": {
-        title: "Buddha — Silicon Wat ℠",
+    "/about": {
+        title: "About — Silicon Wat ℠ (Dharma)",
         description:
-            "Buddha at Silicon Wat — the Dharma jewel of the Three Jewels: Khmer Tipiṭaka transcription and scripture alignment, building the Living Tipiṭaka substrate."
-    },
-    "/login": {
-        title: "Sign In — Silicon Wat ℠",
-        description:
-            "Sign in to Silicon Wat — the Dharma jewel of the Three Jewels: Khmer Tipiṭaka transcription and scripture alignment."
-    },
-    "/install": {
-        title: "Install — Silicon Wat ℠",
-        description:
-            "Install Silicon Wat — the Dharma jewel of the Three Jewels: Khmer Tipiṭaka transcription and scripture alignment."
-    },
-    "/settings": {
-        title: "Settings — Silicon Wat ℠",
-        description:
-            "Settings for Silicon Wat — the Dharma jewel of the Three Jewels: Khmer Tipiṭaka transcription and scripture alignment."
-    },
-    "/tutorials": {
-        title: "Tutorials — Silicon Wat ℠",
-        description:
-            "Tutorials for Silicon Wat — the Dharma jewel of the Three Jewels: Khmer Tipiṭaka transcription and scripture alignment."
+            "Silicon Wat — the Dharma jewel of the Three Jewels. Khmer Tipiṭaka transcription and scripture alignment, building the Living Tipiṭaka substrate that grounds Miss Aquarius℠."
     }
 };
 
@@ -123,20 +103,17 @@ const SITE_JSON_LD = {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "Silicon Wat",
+    alternateName: "Silicon Wat ℠",
     url: "https://siliconwat.dev/",
     logo: "https://siliconwat.dev/assets/web-app-manifest-512x512.png",
     description:
-        "Silicon Wat — Khmer Tipiṭaka transcription and alignment (the Living Tipiṭaka).",
+        "Silicon Wat — the Dharma jewel of the Three Jewels: Khmer Tipiṭaka transcription and scripture alignment, building the Living Tipiṭaka substrate.",
     founder: {
         "@type": "Person",
         name: "Thon Ly",
         url: "https://thonly.org/"
     },
-    sameAs: [
-        "https://siliconwat.com/",
-        "https://siliconwat.org/",
-        "https://thonly.org/"
-    ]
+    sameAs: ["https://heartbank.net/", "https://thonly.org/"]
 };
 
 const HOME_META = {

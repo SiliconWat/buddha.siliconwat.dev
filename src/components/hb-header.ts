@@ -1,5 +1,5 @@
 import { LitElement, html, css, unsafeCSS } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement, state, property } from "lit/decorators.js";
 import tailwind from "../styles.css?inline";
 import "./hb-menu.js";
 import { registerDarkMode, unregisterDarkMode } from "../dark-mode.js";
@@ -21,6 +21,7 @@ export class HbHeader extends LitElement {
 
     @state() private signedIn = false;
     @state() private langOpen = false;
+    @property({ type: Boolean }) collapsed = false;
 
     connectedCallback() {
         super.connectedCallback();
@@ -53,7 +54,10 @@ export class HbHeader extends LitElement {
     render() {
         return html`
             <nav
-                class="bg-white dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600">
+                class="bg-white dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600 transition-transform duration-300 ${this
+                    .collapsed
+                    ? "-translate-y-full"
+                    : ""}">
                 <div
                     class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
                     <aside

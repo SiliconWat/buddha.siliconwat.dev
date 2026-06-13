@@ -1,11 +1,11 @@
 {
     "name": "Silicon Wat ℠",
-    "short_name": "Silicon Wat ℠",
+    "short_name": "Dharma",
     "start_url": "/",
     "display": "standalone",
     "background_color": "orange",
     "theme_color": "orange",
-    "description": "ព្រះពុទ្ធ",
+    "description": "ព្រះធម៌ — Khmer Tipiṭaka",
     "icons": [
         {
             "src": "./web-app-manifest-192x192.png",
@@ -46,14 +46,14 @@
             "sizes": "390x844",
             "type": "image/png",
             "form_factor": "narrow",
-            "label": "HeartBank® Treasury"
+            "label": "Silicon Wat ℠"
         },
         {
             "src": "./screenshot-desktop.png",
             "sizes": "1280x720",
             "type": "image/png",
             "form_factor": "wide",
-            "label": "HeartBank® Treasury"
+            "label": "Silicon Wat ℠"
         }
     ],
     "lang": "en-US",

@@ -58,6 +58,7 @@ const translations: Record<string, Record<Lang, string>> = {
 
     // hb-menu
     "menu.menuTitle": { en: "Three Jewels", km: "ព្រះរតនត្រ័យ" },
+    "menu.about": { en: "About", km: "អំពី" },
     "menu.closeMenu": { en: "Close menu", km: "បិទបញ្ជី" },
     "menu.familyBank": { en: "Family Bank", km: "ធនាគារគ្រួសារ" },
     "menu.createAccount": { en: "Create Account", km: "បង្កើតគណនី" },

@@ -5,6 +5,7 @@ import { getStorage, connectStorageEmulator } from "firebase/storage";
 import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
 import { getMessaging, isSupported } from "firebase/messaging";
 
+// siliconwat.dev — Silicon Wat ℠ Dharma jewel Firebase project (siliconwat-98373).
 const firebaseConfig = {
     apiKey: "AIzaSyDCSzWQF6lX7tTsiQcYxpZZpfB8m2lU_1I",
     authDomain: "siliconwat-98373.firebaseapp.com",
@@ -29,7 +30,6 @@ if (location.hostname === "localhost") {
     connectAuthEmulator(auth, "http://localhost:9093", {
         disableWarnings: true
     });
-    //(auth.settings as any).appVerificationDisabledForTesting = true;
     connectFirestoreEmulator(db, "localhost", 8083);
     connectStorageEmulator(storage, "localhost", 9193);
     connectFunctionsEmulator(functions, "localhost", 5004);

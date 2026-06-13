@@ -3,14 +3,23 @@ import { customElement, state } from "lit/decorators.js";
 import { Router } from "@lit-labs/router";
 import tailwind from "./styles.css?inline";
 import { registerDarkMode, unregisterDarkMode } from "./dark-mode.js";
-import { trackEvent } from "./analytics.js";
+import { trackEvent, registerErrorTracking } from "./analytics.js";
+import { registerSW } from "virtual:pwa-register";
+import { showUpdateToast } from "./components/hb-update-toast.js";
+
+// Register the service worker (offline app shell + FCM). registerType is
+// "prompt": when a new version is installed, show a toast; the user's click
+// activates the waiting worker and reloads the page.
+const updateSW = registerSW({
+    onNeedRefresh() {
+        showUpdateToast(() => updateSW(true));
+    }
+});
 
 import "./pages/home.js";
+import "./pages/about.js";
 import "./pages/login.js";
 import "./pages/settings.js";
-import "./pages/install.js";
-import "./pages/tutorials.js";
-import "./pages/dharma.js";
 import "./pages/not-found.js";
 import "./components/hb-header.js";
 import "./components/hb-footer.js";
@@ -29,6 +38,7 @@ export class HbApp extends LitElement {
     connectedCallback() {
         super.connectedCallback();
         registerDarkMode(this);
+        registerErrorTracking();
         trackEvent("page_view", { path: location.pathname });
     }
 
@@ -38,55 +48,59 @@ export class HbApp extends LitElement {
     }
 
     private router = new Router(this, [
-        { path: "/buddha", render: () => html`<page-home></page-home>` },
+        { path: "/", render: () => html`<page-home></page-home>` },
+        { path: "/about", render: () => html`<page-about></page-about>` },
         { path: "/login", render: () => html`<page-login></page-login>` },
         {
             path: "/settings",
             render: () => html`<page-settings></page-settings>`
-        },
-        {
-            path: "/install",
-            render: () => html`<page-install></page-install>`
-        },
-        {
-            path: "/tutorials",
-            render: () => html`<page-tutorials></page-tutorials>`
-        },
-        {
-            path: "/",
-            render: () => html`<page-dharma></page-dharma>`
         },
         { path: "/*", render: () => html`<page-not-found></page-not-found>` }
     ]);
 
     @state() private chromeHidden = false;
 
-    private handleToggleChrome = () => {
-        this.chromeHidden = !this.chromeHidden;
-    };
+    private navigateTo(path: string) {
+        // Always restore the chrome when leaving the home page.
+        this.chromeHidden = false;
+        this.router.goto(path);
+        trackEvent("page_view", { path });
+        // Reset scroll on cross-route navigation; preserve hash-anchor scroll
+        // when the target URL includes a fragment.
+        if (!path.includes("#")) {
+            window.scrollTo({ top: 0, behavior: "instant" });
+        }
+    }
 
     private handleNavigate = (e: CustomEvent) => {
-        this.router.goto(e.detail);
-        trackEvent("page_view", { path: e.detail });
-        window.dispatchEvent(new Event("tutorials:reset"));
+        this.navigateTo(String(e.detail));
+    };
+
+    // Tapping the fullscreen home video: first tap hides the chrome, second
+    // tap reveals it again and navigates to /about.
+    private handleToggleChrome = () => {
+        if (this.chromeHidden) {
+            this.navigateTo("/about");
+            return;
+        }
+        this.chromeHidden = true;
+        trackEvent("chrome_toggle", { state: "hidden" });
     };
 
     render() {
         return html`
-            ${this.chromeHidden
-                ? null
-                : html`<hb-header
-                      @navigate=${this.handleNavigate}></hb-header>`}
+            <hb-header
+                ?collapsed=${this.chromeHidden}
+                @navigate=${this.handleNavigate}></hb-header>
             <main
                 class="max-w-screen-xl mx-auto px-0 pt-[68px] pb-[70px]"
                 @navigate=${this.handleNavigate}
                 @toggle-chrome=${this.handleToggleChrome}>
                 ${this.router.outlet()}
             </main>
-            ${this.chromeHidden
-                ? null
-                : html`<hb-footer
-                      @navigate=${this.handleNavigate}></hb-footer>`}
+            <hb-footer
+                ?collapsed=${this.chromeHidden}
+                @navigate=${this.handleNavigate}></hb-footer>
         `;
     }
 }
