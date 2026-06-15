@@ -64,7 +64,7 @@ export class PageAbout extends LitElement {
 
                 <section class="mb-8">
                     <p class="mb-4">
-                        <strong>siliconwat.dev</strong> is the
+                        <strong>Silicon Wat ℠</strong> is the
                         <strong>Dharma</strong> jewel of the Three Jewels. In
                         Theravāda Buddhism the canonical triad is
                         <em>Buddha</em> (the Awakened One), <em>Dharma</em> (the
@@ -203,10 +203,37 @@ export class PageAbout extends LitElement {
                     <ul class="space-y-3">
                         <li>
                             <a
+                                href="https://siliconwat.dev"
+                                target="_blank"
+                                rel="noopener"
+                                class="text-orange-700 dark:text-orange-300 hover:underline cursor-pointer font-medium"
+                                >Buddha →</a
+                            >
+                            <span
+                                class="text-sm text-gray-600 dark:text-gray-400"
+                                >siliconwat.com — Buddha AI</span
+                            >
+                        </li>
+                        <li>
+                            <a
+                                href="https://siliconwat.org"
+                                target="_blank"
+                                rel="noopener"
+                                class="text-orange-700 dark:text-orange-300 hover:underline cursor-pointer font-medium"
+                                >Sangha →</a
+                            >
+                            <span
+                                class="text-sm text-gray-600 dark:text-gray-400"
+                                >siliconwat.org — the network of Silica
+                                Wats</span
+                            >
+                        </li>
+                        <li>
+                            <a
                                 href="https://heartbank.net"
                                 target="_blank"
                                 rel="noopener"
-                                class="text-green-700 dark:text-green-300 hover:underline cursor-pointer font-medium"
+                                class="text-orange-700 dark:text-orange-300 hover:underline cursor-pointer font-medium"
                                 >HeartBank® →</a
                             >
                             <span
@@ -219,7 +246,7 @@ export class PageAbout extends LitElement {
                                 href="https://thonly.org"
                                 target="_blank"
                                 rel="noopener"
-                                class="text-green-700 dark:text-green-300 hover:underline cursor-pointer font-medium"
+                                class="text-orange-700 dark:text-orange-300 hover:underline cursor-pointer font-medium"
                                 >Thon Ly →</a
                             >
                             <span
