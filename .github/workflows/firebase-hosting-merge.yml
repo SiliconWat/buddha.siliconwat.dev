@@ -24,9 +24,44 @@ jobs:
                   NODE_ENV: production
 
             - name: Deploy to Firebase Hosting
+              id: deploy
+              # The hosting action intermittently false-fails: a transient
+              # "premature close" on the release call triggers a retry that hits
+              # FAILED_PRECONDITION ("version is already the current active
+              # version") — i.e. the first release actually succeeded. Don't fail
+              # the job here; the next step verifies the deploy really landed.
+              continue-on-error: true
               uses: FirebaseExtended/action-hosting-deploy@v0
               with:
                   repoToken: ${{ secrets.GITHUB_TOKEN }}
                   firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SILICONWAT_98373 }}
                   channelId: live
                   projectId: siliconwat-98373
+
+            - name: Confirm new build is live
+              # Runs only if the deploy step reported failure. Checks the site on
+              # its Firebase default *.web.app URL (always live post-deploy,
+              # independent of custom-domain DNS): the freshly-built entry asset
+              # served => the new version released despite the action's retry race;
+              # a genuine failure leaves it unserved and this step fails for real.
+              if: steps.deploy.outcome == 'failure'
+              run: |
+                set -uo pipefail
+                BASE="https://siliconwat-98373.web.app"
+                # Capture then slice (piping grep into head -1 races a SIGPIPE
+                # under -e -o pipefail).
+                ALL=$(grep -oE '/assets/index-[A-Za-z0-9_-]+\.js' dist/index.html || true)
+                ASSET=$(head -1 <<< "$ALL")
+                if [ -n "$ASSET" ]; then TARGET="$BASE$ASSET"; else TARGET="$BASE/"; fi
+                echo "Verifying deploy via $TARGET"
+                for i in 1 2 3 4 5; do
+                  code="$(curl -s -o /dev/null -w '%{http_code}' "$TARGET" || echo 000)"
+                  echo "Attempt $i: HTTP $code"
+                  if [ "$code" = "200" ]; then
+                    echo "New build is live — deploy succeeded despite the release-retry race."
+                    exit 0
+                  fi
+                  sleep 5
+                done
+                echo "Not served after retries — real deploy failure."
+                exit 1
