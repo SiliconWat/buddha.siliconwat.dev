@@ -56,15 +56,7 @@
     <body
         class="bg-gray-200 dark:bg-gray-600 min-h-screen flex items-center justify-center">
         <hb-app></hb-app>
-        <script>
-            if (location.hostname !== "localhost") {
-                const s = document.createElement("script");
-                s.defer = true;
-                s.src = "https://static.cloudflareinsights.com/beacon.min.js";
-                s.dataset.cfBeacon =
-                    '{"token": "af733916c8ef428caf15bb8615e5140d"}';
-                document.body.appendChild(s);
-            }
-        </script>
+        <!-- Analytics (Cloudflare + HeartBank); no-ops on local hosts -->
+        <script src="/analytics.js" defer></script>
     </body>
 </html>

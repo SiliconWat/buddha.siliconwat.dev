@@ -21,3 +21,12 @@ Functions: `cd functions && npm run build` / `npm run deploy`.
 - Emulator ports: Auth :9093, Firestore :8083, Storage :9193, Functions :5004, Hosting :5003
 - Auth: passwordless email link
 - Hosting rewrites: `/3/**` → `linkPreview` function (OG tags), `**` → `/index.html` (SPA)
+
+## Analytics
+
+`static/analytics.js` (served at `/analytics.js`, loaded from `src/index.html`) runs two beacons,
+both no-op'd on localhost: **Cloudflare Web Analytics** (this zone's own token) **+** a HeartBank
+first-party beacon POSTing `page_view`/`link_click` to `https://thonly.org/api/track`. SPA-aware —
+`page_view` fires on first load **and** on every client-side route change (patches the History API
+`pushState`/`replaceState` + `popstate`, de-duped on path). Replaced the prior inline Cloudflare
+beacon (2026-07-21).
