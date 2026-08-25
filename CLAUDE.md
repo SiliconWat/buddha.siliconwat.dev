@@ -2,7 +2,7 @@
 
 "buddha" subdomain on siliconwat.dev (Dharma TLD — Khmer Tipiṭaka transcription + alignment work). Lit + Vite + Tailwind v4 + Firebase. SEO stack: build-time per-route prerender (`scripts/prerender-meta.mjs`), `src/seo.ts`, static robots/sitemap/IndexNow key, 3 SEO workflows (indexnow / google-sitemap / snapshot).
 
-Project-wide context (Three-Jewels architecture, Tipiṭaka alignment, stack conventions, hard constraints) lives in the **root** `HeartBank®/CLAUDE.md` and project-wide memory (`project_silicon_wat.md`, `project_tipitaka_alignment.md`). No codebase memory dir yet.
+Project-wide context (Three-Jewels architecture, Tipiṭaka alignment, stack conventions, hard constraints) lives in the **root** `MA/CLAUDE.md` and project-wide memory (`project_silicon_wat.md`, `project_tipitaka_alignment.md`). No codebase memory dir yet.
 
 ## Commands
 
