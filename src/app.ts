@@ -8,6 +8,7 @@ import "urlpattern-polyfill";
 import { LitElement, html, css, unsafeCSS } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { Router } from "@lit-labs/router";
+import { reportBoot } from "./boot-health.js";
 import tailwind from "./styles.css?inline";
 import { registerDarkMode, unregisterDarkMode } from "./dark-mode.js";
 import { trackEvent, registerErrorTracking } from "./analytics.js";
@@ -93,6 +94,18 @@ export class HbApp extends LitElement {
         this.chromeHidden = true;
         trackEvent("chrome_toggle", { state: "hidden" });
     };
+
+    // Report a working boot for the service worker (see src/boot-health.ts).
+    // Not in firstUpdated: the app shell renders even when routing is dead —
+    // header and footer paint while <main> stays empty — so a rendered
+    // component is not evidence that the app works. A matched route is.
+    private bootReported = false;
+
+    updated() {
+        if (this.bootReported || this.router.outlet() === undefined) return;
+        this.bootReported = true;
+        void reportBoot();
+    }
 
     render() {
         return html`

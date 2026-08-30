@@ -17,6 +17,8 @@ import { StaleWhileRevalidate } from "workbox-strategies";
 import { initializeApp } from "firebase/app";
 import { getMessaging, onBackgroundMessage } from "firebase/messaging/sw";
 
+import { BOOT_CACHE, BOOT_MARKER } from "./boot-health.js";
+
 declare let self: ServiceWorkerGlobalScope & { __WB_MANIFEST: unknown[] };
 
 // --- Firebase Cloud Messaging (background) ---
@@ -58,6 +60,25 @@ registerRoute(
 // --- Update flow ---
 // First install controls the page immediately; updates wait until the refresh
 // toast posts SKIP_WAITING (registerType: "prompt").
+//
+// One exception, and it is a property of the install rather than a rule anyone
+// has to remember to switch off: an app that renders nothing can never show
+// that toast, so a waiting worker would wait for ever and go on serving the
+// broken shell out of precache. The page writes a marker once a route has
+// actually rendered (src/boot-health.ts); its absence means the installed app
+// has never once worked, and only then do we take over uninvited.
+self.addEventListener("install", (event) => {
+    (event as ExtendableEvent).waitUntil(
+        (async () => {
+            try {
+                const cache = await caches.open(BOOT_CACHE);
+                if (!(await cache.match(BOOT_MARKER))) await self.skipWaiting();
+            } catch {
+                // Storage unavailable: fall back to the normal prompt flow.
+            }
+        })()
+    );
+});
 self.addEventListener("activate", (event) => {
     event.waitUntil(self.clients.claim());
 });
