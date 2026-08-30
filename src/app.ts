@@ -1,3 +1,10 @@
+// @lit-labs/router builds a `new URLPattern` for every route it tries to match,
+// so a browser without URLPattern matches nothing: goto() rejects, outlet()
+// renders nothing, and the whole site is a blank page. Safari only shipped
+// URLPattern in Safari 26 / iOS 26 (Sept 2025), which strands every iOS 18 and
+// earlier device — including hardware that cannot upgrade. Must stay above the
+// router import. The polyfill no-ops where URLPattern is native.
+import "urlpattern-polyfill";
 import { LitElement, html, css, unsafeCSS } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { Router } from "@lit-labs/router";

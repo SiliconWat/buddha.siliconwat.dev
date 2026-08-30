@@ -58,6 +58,17 @@ registerRoute(
 // --- Update flow ---
 // First install controls the page immediately; updates wait until the refresh
 // toast posts SKIP_WAITING (registerType: "prompt").
+// ⚠️ ONE-RELEASE OVERRIDE (2026-08-30) — REVERT AFTER THIS SHIPS.
+// The pre-polyfill bundle is a blank page on Safari < 26 (see the URLPattern
+// note at the top of src/app.ts). On those devices the refresh toast can never
+// appear, because the app never renders — so a waiting worker would wait
+// forever and the old, broken shell would keep being served out of precache.
+// Skipping the wait is the only way the fix reaches a device that is already
+// stuck. It costs the update prompt for one release: everyone else silently
+// gets the new shell on their next navigation instead of on a toast click.
+self.addEventListener("install", () => {
+    self.skipWaiting();
+});
 self.addEventListener("activate", (event) => {
     event.waitUntil(self.clients.claim());
 });
