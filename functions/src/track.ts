@@ -1,3 +1,8 @@
+// ⛔⛔ DEPRECATED (founder 2026-10-07: "make a note that onEventCreated is deprecated").
+// This site's OWN push — src/analytics.ts → this project's `events` → onEventCreated → FCM to the admin — is not
+// the estate's channel. The channel is the hub: static/analytics.js → thonly.org/api/track → join-333-eco's
+// onEventCreated (TH/thonly.org/thonly.org/functions/src/track.ts). ⛔ Never deploy this function to a project
+// that does not run it yet, and never extend it; to remove a live copy, ask the founder first.
 import {
     onDocumentCreated,
     FirestoreEvent,
