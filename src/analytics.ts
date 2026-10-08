@@ -26,6 +26,9 @@ export async function trackEvent(event: string, data?: Record<string, string>) {
         data: data ?? null,
         uid: auth.currentUser?.uid ?? null,
         deviceId: getDeviceId(),
+        // A369: a driven browser (navigator.webdriver — /safari's simulator, a
+        // headless crawler). Sent only when true; onEventCreated never pushes it.
+        ...(navigator.webdriver === true ? { wd: true } : {}),
         userAgent: navigator.userAgent,
         location: `${Intl.DateTimeFormat().resolvedOptions().timeZone}`,
         timestamp: serverTimestamp()

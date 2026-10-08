@@ -21,6 +21,10 @@ export const onEventCreated = onDocumentCreated(
     ) => {
         const data = event.data?.data();
         if (!data) return;
+        // A369 (2026-10-07): a driven browser (navigator.webdriver — /safari's
+        // iOS Simulator, whose agent is a real iPhone's). Founder: "when
+        // navigator.webdriver don't push to admin". The events row stays.
+        if (data.wd === true) return;
 
         try {
             const adminUser = await admin
