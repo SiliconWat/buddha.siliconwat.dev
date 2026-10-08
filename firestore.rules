@@ -1,13 +1,36 @@
 rules_version = '2';
 
+// A371 (founder 2026-10-07: "go"). This file used to give `events` read/update/delete to ANY signed-in user and end in
+// `match /{document=**} { allow read, write: if request.auth != null; }`. Rules are OR-ed across matching paths, so a
+// permissive catch-all re-opens everything written above it: every collection a client uses now has its own block,
+// and the catch-all DENIES. The estate's reference is 333.eco's firestore.rules. ⛔ A new client collection needs its
+// own block here, or the deny refuses it — adding one is a decision.
 service cloud.firestore {
   match /databases/{database}/documents {
+    function tokenOk() {
+      return request.resource.data.get('fcmToken', null) == null
+        || (request.resource.data.fcmToken is string && request.resource.data.fcmToken.size() <= 500);
+    }
+
+    // The notification toggle (src/pages/settings.ts, src/push.ts): a person's OWN doc, and only `fcmToken` moves.
+    // ⚠️ affectedKeys on update, not keys(): older docs carry fields this site no longer writes (avatarURL, username
+    // on thank.heartbank.me), and a whole-document check would refuse their owners the toggle.
+    match /users/{uid} {
+      allow get, delete: if request.auth != null && request.auth.uid == uid;
+      allow create: if request.auth != null && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['fcmToken']) && tokenOk();
+      allow update: if request.auth != null && request.auth.uid == uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['fcmToken']) && tokenOk();
+    }
+
+    // Write-only telemetry (src/analytics.ts). Read with admin credentials, which bypass these rules.
     match /events/{eventId} {
       allow create: if true;
-      allow read, update, delete: if request.auth != null;
+      allow read, update, delete: if false;
     }
+
     match /{document=**} {
-      allow read, write: if request.auth != null;
+      allow read, write: if false;
     }
   }
 }
